@@ -1,32 +1,66 @@
+import java.util.ArrayList;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 public class CharacterizationTest {
-    @Test
-    public void testTypicalOutput() {
+	@Test
+	public void testTypicalOutput() {
 
-        Vehicle blueHonda = new Vehicle("Blue Honda 2008", Vehicle.SEDAN);
-        Vehicle greyJeep = new Vehicle("Grey Jeep 2013", Vehicle.FOURxFOUR);
-        Vehicle RedSunny = new Vehicle("Red Sunny 2014", Vehicle.SEDAN);
-        Vehicle BlueBMW = new Vehicle("Blue X3 2017", Vehicle.SUV);
+		ArrayList<String> data = new ArrayList<String>();
 
-        Rental hondaRental = new Rental(blueHonda, 431, 4, false);
-        Rental jeepRental = new Rental(greyJeep, 744, 4, false);
-        Rental sunnnyRental = new Rental(RedSunny, 591, 3, true);
-        Rental x3Rental = new Rental(BlueBMW, 240, 5, false);
+		Vehicle blueHonda = new Vehicle("Blue Honda 2008", VehicleType.SEDAN);
+		Vehicle greyJeep = new Vehicle("Grey Jeep 2013", VehicleType.FOURxFOUR);
+		Vehicle RedSunny = new Vehicle("Red Sunny 2014", VehicleType.SEDAN);
+		Vehicle BlueBMW = new Vehicle("Blue X3 2017", VehicleType.SUV);
 
-        Customer virginGates = new Customer("Virgin Gates");
-        Customer sharmDreams = new Customer("Sharm Dreams");
+		RentalData rentalData1 = new RentalData(431, 4, false);
+		RentalData rentalData2 = new RentalData(744, 4, false);
+		RentalData rentalData3 = new RentalData(591, 3, true);
+		RentalData rentalData4 = new RentalData(240, 5, false);
 
-        virginGates.addRental(hondaRental);
-        virginGates.addRental(jeepRental);
-        virginGates.addRental(sunnnyRental);
+		RentalRules SUVRentalRules = new RentalRules();
+		SUVRentalRules.AMOUNT_PER_DAY = 150;
+		SUVRentalRules.MILES_LIMIT_PER_DAY = 70;
+		SUVRentalRules.FACTOR_AFTER_MILE_EXCEED = 2;
+		SUVRentalRules.LATE_MOUNT_FACTOR = 0.3;
+		SUVRentalRules.REWARD_POINTS_THRESHOLD = 5;
+		SUVRentalRules.REWARD_POINTS_FACTOR = 2;
 
-        sharmDreams.addRental(x3Rental);
+		RentalRules FOURXFOURRentalRules = new RentalRules(SUVRentalRules);
+		FOURXFOURRentalRules.AMOUNT_PER_DAY = 200;
 
-        Assert.assertEquals("Rental Record for:Virgin Gates\n\t\"Blue Honda 2008\"\tLE 912.0\n\t\"Grey Jeep 2013\"\tLE 850.0\n\t\"Red Sunny 2014\"\tLE 1268.96\nAmount owed is LE 3030.96\nYou earned: 4 new Reward Points\n\n",virginGates.statement());
+		RentalRules SEDANRentalRules = new RentalRules(SUVRentalRules);
+		SEDANRentalRules.AMOUNT_PER_DAY = 100;
+		SEDANRentalRules.MILES_LIMIT_PER_DAY = 50;
+		SEDANRentalRules.RENTAL_LATE_FACTOR = 0.03;
 
-        Assert.assertEquals("Rental Record for:Sharm Dreams\n\t\"Blue X3 2017\"\tLE 760.0\nAmount owed is LE 760.0\nYou earned: 1 new Reward Points\n\n",sharmDreams.statement());
+		Rental rental1 = new Rental(blueHonda, SEDANRentalRules, rentalData1);
+		Rental rental2 = new Rental(greyJeep, FOURXFOURRentalRules, rentalData2);
+		Rental rental3 = new Rental(RedSunny, SEDANRentalRules, rentalData3);
+		Rental rental4 = new Rental(BlueBMW, SUVRentalRules, rentalData4);
 
-    }
+		JSON json = new JSON();
+
+		Customer virginGates = new Customer("Virgin Gates", FormatType.PLAIN_TEXT);
+		Customer sharmDreams = new Customer("Sharm Dreams", FormatType.PLAIN_TEXT);
+
+		virginGates.addRentalToList(rental1);
+		virginGates.addRentalToList(rental2);
+		virginGates.addRentalToList(rental3);
+
+		sharmDreams.addRentalToList(rental4);
+
+		Formatter<Customer> formatter = JsonFormatterFactory.getFormatter(virginGates);
+		String tt = formatter.getValue(virginGates);
+
+		Assert.assertEquals(
+				"Rental Record for:Virgin Gates\n\t\"Blue Honda 2008\"\tLE 912.0\n\t\"Grey Jeep 2013\"\tLE 850.0\n\t\"Red Sunny 2014\"\tLE 1268.96\nAmount owed is LE 3030.96\nYou earned: 4 new Reward Points\n\n",
+				virginGates.statement());
+
+		Assert.assertEquals(
+				"Rental Record for:Sharm Dreams\n\t\"Blue X3 2017\"\tLE 760.0\nAmount owed is LE 760.0\nYou earned: 1 new Reward Points\n\n",
+				sharmDreams.statement());
+
+	}
 }

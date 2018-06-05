@@ -1,20 +1,14 @@
 
-public class SEDANRental implements RentalBillingStrategy {
-
-	private Rental rental;
+public class SEDANRental extends CarRental {
 
 	public SEDANRental(Rental rental) {
-		this.rental = rental;
-	}
-
-	private int getRentalExceededMiles() {
-		return rental.getRentalData().getKilometersRented() - 
-				(rental.getRentalData().getDaysRented() * rental.getRentalRules().MILES_LIMIT_PER_DAY);
+		super(rental);
 	}
 
 	@Override
 	public double getRentalAmount(Rental rental) {
-		double amount = 50 ;
+		validateRentalData();
+		double amount = basicAmount;
 		amount += rental.getRentalRules().AMOUNT_PER_DAY * rental.getRentalData().getDaysRented();
 		if (getRentalExceededMiles() > 0) {
 			amount += (getRentalExceededMiles() * rental.getRentalRules().FACTOR_AFTER_MILE_EXCEED);
@@ -36,7 +30,8 @@ public class SEDANRental implements RentalBillingStrategy {
 
 	@Override
 	public String getRentalAmountStatment(Rental rental) {
-		String rentalStatment = "\t\""+rental.getVehicle().getMakeAndModel()+"\"\tLE"+ String.valueOf(getRentalAmount(rental));
+		String rentalStatment = "\t\"" + rental.getVehicle().getMakeAndModel() + "\"\tLE "
+				+ String.valueOf(getRentalAmount(rental));
 		return rentalStatment;
 	}
 

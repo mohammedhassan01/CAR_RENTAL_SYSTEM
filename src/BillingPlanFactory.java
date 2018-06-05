@@ -1,7 +1,8 @@
 
 public class BillingPlanFactory {
-	private BillingPlanFactory(){
+	private BillingPlanFactory() {
 	}
+
 	public static RentalBillingStrategy getRentalBillingPlan(Rental rental) {
 		if (rental.getVehicle().getVehicleType() == VehicleType.FOURxFOUR) {
 			return new FourXFourRental(rental);
@@ -10,7 +11,7 @@ public class BillingPlanFactory {
 		} else if (rental.getVehicle().getVehicleType() == VehicleType.SUV) {
 			return new SUVRental(rental);
 		} else {
-			return null;
+			return new CarRental(rental);
 		}
 	}
 

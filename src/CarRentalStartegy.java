@@ -1,8 +1,9 @@
 
 public abstract class CarRentalStartegy implements RentalBillingStrategy {
-	private Rental rental ;
+	private Rental rental;
+
 	public CarRentalStartegy(Rental rental) {
-		this.rental = rental ;
+		this.rental = rental;
 	}
-	
+
 }

@@ -23,5 +23,4 @@ public class Vehicle {
 		this.vehicleType = vehicleType;
 	}
 
-	
 }

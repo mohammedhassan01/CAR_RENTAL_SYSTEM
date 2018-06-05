@@ -3,7 +3,7 @@ public class CustomerJsonFormatter implements Formatter<Customer> {
 
 	@Override
 	public String getValue(Customer customer) {
-		Formatter<Rental> formatter = FormatterFactory.getFormatter(customer.getRentalsList().get(0));
+		Formatter<Rental> formatter = JsonFormatterFactory.getFormatter(customer.getRentalsList().get(0));
 		StringBuilder stringBuilder = new StringBuilder();
 		StringBuilder stringBuilder2 = new StringBuilder();
 		stringBuilder.append("{\"name\":" + "\"" + customer.getName() + "\"");
@@ -18,7 +18,7 @@ public class CustomerJsonFormatter implements Formatter<Customer> {
 			if (!first) {
 				stringBuilder2.append(", ");
 			}
-			first = false ;
+			first = false;
 			stringBuilder2.append(formatter.getValue(rental));
 
 		}
