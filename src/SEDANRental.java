@@ -22,7 +22,6 @@ public class SEDANRental implements RentalBillingStrategy {
 		if (rental.getRentalData().isLateFee()) {
 			amount += (amount * rental.getRentalRules().RENTAL_LATE_FACTOR);
 		}
-		System.out.println(amount);
 		return amount;
 	}
 

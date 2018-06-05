@@ -28,7 +28,6 @@ public class SUVRental implements RentalBillingStrategy {
 		{
 			amount -= amount * rental.getRentalRules().AMOUNT_DISCOUNT_RATE;
 		}
-		System.out.println(amount);
 		return amount ;
 	}
 
